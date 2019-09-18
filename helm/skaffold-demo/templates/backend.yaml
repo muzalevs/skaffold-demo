@@ -1,0 +1,51 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    project: skaffold-demo
+    app: backend
+spec:
+  selector:
+    project: skaffold-demo
+    app: backend
+  ports:
+    - port: 8000
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    project: skaffold-demo
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: skaffold-demo
+      app: backend
+  template:
+    metadata:
+      name: backend
+      labels:
+        project: skaffold-demo
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.backendImageName }}
+          imagePullPolicy: Always
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: HOT_RELOAD
+              value: {{ .Values.globalHotReload | quote }}
+          ports:
+            - containerPort: 8000

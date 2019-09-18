@@ -1,0 +1,37 @@
+apiVersion: skaffold/v1beta13
+kind: Config
+build:
+  artifacts:
+    - image: backend
+      context: ./backend
+      docker: &docker_base_build
+        buildArgs:
+          http_proxy: "{{ .http_proxy }}"
+          https_proxy: "{{ .https_proxy }}"
+          no_proxy: "{{ .no_proxy }}"
+      sync:
+        manual:
+          - src: "src/**/*.py"
+            dest: "/app"
+
+
+    - image: frontend
+      context: ./frontend
+      docker:
+        << : *docker_base_build
+
+  tagPolicy:
+    envTemplate:
+      template: "{{ .DOCKER_REGISTRY }}/garagetalks/{{ .IMAGE_NAME }}:skaffold-demo"
+
+  local:
+    push: true
+
+deploy:
+  helm:
+    releases:
+      - name: "skaffold-demo"
+        chartPath: helm/skaffold-demo
+        values:
+          frontendImageName: frontend
+          backendImageName: backend

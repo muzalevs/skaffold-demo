@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Skaffold Demo</title>
+    <style>
+        body {
+            background-color: lightcyan;
+        }
+
+        .button {
+            background-color: darkblue;
+            border: black;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: center;
+            font-size: 52px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%)
+        }
+
+        .label {
+            font-size: 52px;
+            color: darkblue;
+            white-space: pre-wrap;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%)
+        }
+    </style>
+</head>
+
+<body>
+    <input type="button" class="button" id="bt" value="Get Pod Info" onclick="getPodInfo()" />
+</p>
+<label class="label" id="podInfoLabel">Hostname:
+IP:
+</label>
+</body>
+<script>
+    function getPodInfo() {
+        let request = new XMLHttpRequest();
+
+        request.open('GET', '/api/pod_info', true);
+        request.onload = function() {
+            let data = JSON.parse(this.response);
+
+            if (request.status >= 200 && request.status < 400) {
+                let lb = document.getElementById('podInfoLabel');
+                lb.innerText = 'Hostname: ' + data.pod_hostname + '\nIP: ' + data.pod_ip;
+            } else {
+                console.log('error')
+            }
+        }
+
+        request.send();
+    }
+</script>
+</html>

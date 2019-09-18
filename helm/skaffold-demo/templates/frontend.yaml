@@ -1,0 +1,44 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    project: skaffold-demo
+    app: frontend
+spec:
+  selector:
+    project: skaffold-demo
+    app: frontend
+  ports:
+    - port: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    project: skaffold-demo
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: skaffold-demo
+      app: frontend
+  template:
+    metadata:
+      name: frontend
+      labels:
+        project: skaffold-demo
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: {{ .Values.frontendImageName }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
