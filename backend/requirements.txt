@@ -1,4 +1,4 @@
 multidict==4.3.1
-aiohttp==2.3.6
+aiohttp==3.7.4
 aiohttp-autoreload==0.0.1
 yarl==0.16.0
